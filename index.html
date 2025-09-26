@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Mengajar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --dark: #0f172a;
+      --darker: #0a0f1c;
+      --light: #f8fafc;
+      --gray: #64748b;
+      --gray-dark: #334155;
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(56, 189, 248, 0.2);
+    }
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow: hidden; /* Prevent body scroll */
+    }
+    /* Header Styling from Second Code */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+      padding: 20px 0;
+      max-width: 100%;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .header h1 {
+      font-size: 2.8rem;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+    .header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 25%;
+      width: 50%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      border-radius: 3px;
+    }
+    .header .info {
+      color: var(--gray);
+      font-size: 1.1rem;
+      margin-top: 10px;
+      max-width: 100%;
+      overflow-wrap: break-word;
+    }
+    .header .info span {
+      display: block;
+      font-weight: 500;
+    }
+    .header .info span strong {
+      color: var(--light);
+    }
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .header h1 {
+        font-size: 2.4rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      .header .info {
+        font-size: 1rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+    }
+    /* Rest of your original CSS remains unchanged */
+    .filters {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background: rgba(30, 41, 59, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.5s ease-out;
+    }
+    select, input, button {
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: none;
+      background: #334155;
+      color: #f8fafc;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+    select:hover, input:hover, button:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+    select:focus, input:focus {
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+    }
+    input[type="date"] {
+      background: #334155;
+      color: #f8fafc;
+      padding-right: 10px;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+    }
+    button {
+      background: #38bdf8;
+      color: #0f172a;
+      font-weight: 600;
+      padding: 10px 20px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: #0ea5e9;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+      transform: translateY(-2px);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      animation: fadeInUp 0.8s ease-out;
+    }
+    thead {
+      background: linear-gradient(to right, #334155, #475569);
+    }
+    th, td {
+      padding: 15px 20px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    th {
+      color: #38bdf8;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+    td {
+      font-size: 15px;
+    }
+    tr {
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.7);
+    }
+    tr:hover {
+      background: #475569;
+      transform: scale(1.01);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    td.jam-col, th.jam-col {
+      white-space: nowrap;
+      width: 1%;
+    }
+    .status-selesai {
+      color: #22c55e;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-selesai::before {
+      content: '✔';
+      font-size: 14px;
+    }
+    .status-proses {
+      color: #facc15;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .status-proses::before {
+      content: '⏳';
+      font-size: 14px;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @media (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      select, input, button {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      th, td {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+
+    /* New styles for sticky header and filters */
+    .sticky-top {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+    .content-wrapper {
+      height: 100vh;
+      overflow-y: auto;
+      padding: 40px;
+    }
+    @media (max-width: 768px) {
+      .content-wrapper {
+        padding: 20px;
+      }
+    }
+    @media (max-width: 480px) {
+      .content-wrapper {
+        padding: 10px;
+      }
+    }
+    .header {
+      margin-bottom: 0; /* Adjust to reduce space between header and filters */
+    }
+    .filters {
+      margin-bottom: 0;
+      border-radius: 0 0 12px 12px; /* Optional: round bottom corners */
+    }
+
+    /* New styles for class-specific backgrounds (tipis/transparent) */
+    /* Assuming common classes like 7A,7B,8A,8B,9A,9B - adjust as needed */
+    tr.kelas-7A {
+      background: rgba(59, 130, 246, 0.1) !important; /* Blue tipis */
+    }
+    tr.kelas-7B {
+      background: rgba(16, 185, 129, 0.1) !important; /* Green tipis */
+    }
+    tr.kelas-8A {
+      background: rgba(245, 158, 11, 0.1) !important; /* Yellow tipis */
+    }
+    tr.kelas-8B {
+      background: rgba(139, 92, 246, 0.1) !important; /* Purple tipis */
+    }
+    tr.kelas-9A {
+      background: rgba(236, 72, 153, 0.1) !important; /* Pink tipis */
+    }
+    tr.kelas-9B {
+      background: rgba(34, 197, 94, 0.1) !important; /* Lime tipis */
+    }
+    /* If there are more classes, they will fall back to default */
+    /* Hover and even/odd will still apply on top */
+  </style>
+</head>
+<body>
+  <div class="sticky-top">
+    <div class="header fade-in">
+      <h1><i class="fas fa-chalkboard-teacher"></i> Jadwal Mengajar</h1>
+      <div class="info">
+        <span><strong>Guru:</strong> Ahmad Zaman Huri</span>
+        <span><strong>Sekolah:</strong> MtsT Daarut Tahfidz Al-Ikhlas</span>
+        <span><strong>Pelajaran:</strong> Bahasa Inggris</span>
+      </div>
+    </div>
+    <div class="filters">
+      <select id="filterKelas">
+        <option value="">Filter Kelas</option>
+      </select>
+      <select id="filterJam">
+        <option value="">Filter Jam</option>
+      </select>
+      <input type="date" id="filterTanggal">
+      <select id="filterStatus">
+        <option value="">Filter Status</option>
+        <option value="selesai">Selesai</option>
+        <option value="proses">Masih Proses</option>
+      </select>
+      <button id="resetFilters">Reset Filter</button>
+    </div>
+  </div>
+  <div class="content-wrapper">
+    <table id="kegiatanTable">
+      <thead>
+        <tr>
+          <th>Kelas</th>
+          <th class="jam-col">Jam</th>
+          <th>Tanggal</th>
+          <th>Hari</th>
+          <th>Topik</th>
+          <th>Aktivitas</th>
+          <th>Target</th>
+          <th>Status</th>
+          <th>Keterangan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="9">Memuat data...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- Original JavaScript with minor addition for class colors -->
+  <script>
+    const SHEET_ID = "1JTwCrf7N27tuN6R3qBMzasoVPg3KixnetD9jLafrAJs";
+    const SHEET_NAME = "Kegiatan";
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${SHEET_NAME}`;
+    const filterKelas = document.getElementById("filterKelas");
+    const filterJam = document.getElementById("filterJam");
+    const filterTanggal = document.getElementById("filterTanggal");
+    const filterStatus = document.getElementById("filterStatus");
+    const resetBtn = document.getElementById("resetFilters");
+    const tableBody = document.querySelector("#kegiatanTable tbody");
+    let allData = [];
+    function parseCSV(csvText) {
+      const rows = [];
+      let currentRow = [];
+      let inQuotes = false;
+      let currentValue = "";
+      for (let i = 0; i < csvText.length; i++) {
+        const char = csvText[i];
+        const nextChar = csvText[i + 1];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          currentRow.push(currentValue.trim());
+          currentValue = "";
+        } else if (char === '\n' && !inQuotes) {
+          currentRow.push(currentValue.trim());
+          rows.push(currentRow);
+          currentRow = [];
+          currentValue = "";
+        } else if (char === '\r' && nextChar === '\n' && !inQuotes) {
+          currentRow.push(currentValue.trim());
+          rows.push(currentRow);
+          currentRow = [];
+          currentValue = "";
+          i++;
+        } else {
+          currentValue += char;
+        }
+      }
+      if (currentValue.trim() !== "" || currentRow.length > 0) {
+        currentRow.push(currentValue.trim());
+        rows.push(currentRow);
+      }
+      return rows;
+    }
+    function convertToISODate(dateStr) {
+      if (!dateStr) return "";
+     
+      const parts = dateStr.split("/");
+      if (parts.length === 3) {
+        const day = parts[0].padStart(2, '0');
+        const month = parts[1].padStart(2, '0');
+        const year = parts[2];
+        return `${year}-${month}-${day}`;
+      }
+     
+      try {
+        return new Date(dateStr).toISOString().split('T')[0];
+      } catch {
+        return "";
+      }
+    }
+    function formatDisplayDate(isoDate) {
+      if (!isoDate) return "";
+     
+      const parts = isoDate.split("-");
+      if (parts.length === 3) {
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      }
+      return isoDate;
+    }
+    async function loadData() {
+      try {
+        const response = await fetch(SHEET_URL);
+        const csv = await response.text();
+        const rows = parseCSV(csv);
+        allData = rows.slice(1)
+          .filter(r => r.length >= 9 && r[0] && r[0].trim() !== "")
+          .map(row => {
+            const originalDate = row[2].replace(/^"|"$/g, "");
+            return {
+              original: row,
+              kelas: row[0].replace(/^"|"$/g, ""),
+              jam: row[1].replace(/^"|"$/g, ""),
+              tanggal: originalDate,
+              tanggalISO: convertToISODate(originalDate),
+              topik: row[3].replace(/^"|"$/g, ""),
+              aktivitas: row[4].replace(/^"|"$/g, ""),
+              target: row[6].replace(/^"|"$/g, ""),
+              status: row[7].replace(/^"|"$/g, "").toLowerCase(),
+              keterangan: row[8].replace(/^"|"$/g, "")
+            };
+          });
+        renderTable(allData);
+        fillDropdowns(allData);
+      } catch (e) {
+        console.error("Error loading data:", e);
+        tableBody.innerHTML = `<tr><td colspan="9">Gagal memuat data. Pastikan sheet dipublish.</td></tr>`;
+      }
+    }
+    function getDayName(dateStr) {
+      if (!dateStr) return "";
+      let dateObj;
+      const parts = dateStr.split("/");
+      if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        dateObj = new Date(year, month, day);
+      } else {
+        dateObj = new Date(dateStr);
+      }
+      if (isNaN(dateObj.getTime())) return "";
+      return dateObj.toLocaleDateString("id-ID", { weekday: "long" });
+    }
+    function renderTable(data) {
+      tableBody.innerHTML = "";
+      if (data.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="9">Tidak ada data</td></tr>`;
+        return;
+      }
+     
+      data.forEach(item => {
+        const hari = getDayName(item.tanggal);
+        let statusClass = "";
+        let statusText = item.status;
+       
+        if (item.status.includes("selesai")) {
+          statusClass = "status-selesai";
+          statusText = "Selesai";
+        } else if (item.status.includes("proses") || item.status.includes("masih")) {
+          statusClass = "status-proses";
+          statusText = "Masih Proses";
+        }
+        const tr = document.createElement("tr");
+        // Add class for specific kelas background
+        const kelasClass = 'kelas-' + item.kelas.replace(/\W/g, ''); // Sanitize for CSS class
+        tr.classList.add(kelasClass);
+        tr.innerHTML = `
+          <td>${item.kelas}</td>
+          <td class="jam-col">${item.jam}</td>
+          <td>${item.tanggal}</td>
+          <td>${hari}</td>
+          <td>${item.topik}</td>
+          <td>${item.aktivitas}</td>
+          <td>${item.target}</td>
+          <td class="${statusClass}">${statusText}</td>
+          <td>${item.keterangan}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+    function fillDropdowns(data) {
+      const kelasSet = new Set();
+      const jamSet = new Set();
+      data.forEach(item => {
+        if (item.kelas) kelasSet.add(item.kelas);
+        if (item.jam) jamSet.add(item.jam);
+      });
+      filterKelas.innerHTML = '<option value="">Filter Kelas</option>';
+      filterJam.innerHTML = '<option value="">Filter Jam</option>';
+      addOptions(filterKelas, kelasSet);
+      addOptions(filterJam, jamSet);
+    }
+    function addOptions(select, items) {
+      Array.from(items).sort().forEach(item => {
+        if (!item) return;
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        select.appendChild(option);
+      });
+    }
+    function filterTable() {
+      const kelasVal = filterKelas.value.toLowerCase();
+      const jamVal = filterJam.value.toLowerCase();
+      const tanggalVal = filterTanggal.value;
+      const statusVal = filterStatus.value.toLowerCase();
+      const filtered = allData.filter(item => {
+        const kelasMatch = !kelasVal || item.kelas.toLowerCase().includes(kelasVal);
+        const jamMatch = !jamVal || item.jam.toLowerCase().includes(jamVal);
+        const tanggalMatch = !tanggalVal || item.tanggalISO === tanggalVal;
+       
+        let statusMatch = true;
+        if (statusVal) {
+          if (statusVal === "selesai") {
+            statusMatch = item.status.includes("selesai");
+          } else if (statusVal === "proses") {
+            statusMatch = item.status.includes("proses") || item.status.includes("masih");
+          }
+        }
+        return kelasMatch && jamMatch && tanggalMatch && statusMatch;
+      });
+      renderTable(filtered);
+    }
+    function resetFilters() {
+      filterKelas.value = "";
+      filterJam.value = "";
+      filterTanggal.value = "";
+      filterStatus.value = "";
+      renderTable(allData);
+    }
+    filterKelas.addEventListener("change", filterTable);
+    filterJam.addEventListener("change", filterTable);
+    filterTanggal.addEventListener("change", filterTable);
+    filterStatus.addEventListener("change", filterTable);
+    resetBtn.addEventListener("click", resetFilters);
+    loadData();
+  </script>
+</body>
+</html>
