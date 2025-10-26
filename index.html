@@ -17,6 +17,10 @@
       --gray-dark: #374151;
       --card-bg: rgba(255, 255, 255, 0.05);
       --card-border: rgba(212, 160, 23, 0.2);
+      /* From HTML 1 for background */
+      --bg-light: #F5F5DC;
+      --bg-white: #F5F5F5;
+      --text-dark: #0F172A;
     }
     * {
       margin: 0;
@@ -25,15 +29,29 @@
     }
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(145deg, #1f2937 0%, #111827 100%);
+      /* Background from HTML 1 */
+      background: linear-gradient(135deg, #e3f2fd, #f5f5dc, #e8f5e8);
       color: var(--light);
       min-height: 100vh;
       overflow-x: hidden;
+      padding: 20px 10px;
+      transition: background 0.3s;
+      will-change: background;
     }
     .container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 40px 30px;
+      /* Background from HTML 1 */
+      background: radial-gradient(circle, #fffdfd 0%, rgba(212,175,37,.05) 70%),
+                  repeating-linear-gradient(45deg, rgba(0,0,0,.01) 0, rgba(0,0,0,.01) 1px, transparent 1px, transparent 6px);
+      background-blend-mode: overlay;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0,31,63,.15);
+      backdrop-filter: blur(8px);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
     }
     /* Sticky Header and Filters */
     .sticky-top {
@@ -157,7 +175,7 @@
     }
     td {
       font-size: 1rem;
-      color: var(--light);
+      color: var(--text-dark); /* isi tabel hitam */
     }
     tr {
       transition: all 0.3s ease;
@@ -203,6 +221,35 @@
     tr.kelas-8B { background: rgba(139, 92, 246, 0.1) !important; }
     tr.kelas-9A { background: rgba(236, 72, 153, 0.1) !important; }
     tr.kelas-9B { background: rgba(34, 197, 94, 0.1) !important; }
+    /* Back to Top */
+    .back-to-top{
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--primary);
+      font-size: 18px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.2);
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+      z-index: 999;
+      opacity: 0;
+    }
+    .back-to-top.show{
+      display: flex;
+      opacity: 1;
+    }
+    .back-to-top:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+    }
     /* Animations */
     @keyframes slideInDown {
       from { opacity: 0; transform: translateY(-20px); }
@@ -242,6 +289,12 @@
     @media (orientation: landscape) and (max-width: 768px) {
       .filters { flex-direction: row; flex-wrap: wrap; }
       select, input, button { width: auto; margin-right: 10px; }
+    }
+    /* Fallback for browsers without backdrop-filter support */
+    @supports not (backdrop-filter: blur(10px)) {
+      .container {
+        background: radial-gradient(circle, #fffdfd 0%, rgba(212,175,37,.1) 70%);
+      }
     }
   </style>
 </head>
@@ -305,6 +358,12 @@
       </table>
     </div>
   </div>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop" aria-label="Kembali ke atas">
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
   <script>
     const SHEET_ID = "1JTwCrf7N27tuN6R3qBMzasoVPg3KixnetD9jLafrAJs";
     const SHEET_NAME = "Kegiatan";
@@ -370,7 +429,7 @@
 
     function getMonthFromISODate(isoDate) {
       if (!isoDate) return "";
-      return isoDate.split("-")[1]; // Ambil bagian bulan (MM) dari YYYY-MM-DD
+      return isoDate.split("-")[1];
     }
 
     function formatDisplayDate(isoDate) {
@@ -405,7 +464,7 @@
               keterangan: row[8].replace(/^"|"$/g, "")
             };
           })
-          .sort((a, b) => new Date(b.tanggalISO) - new Date(a.tanggalISO)); // Sort by date descending
+          .sort((a, b) => new Date(b.tanggalISO) - new Date(a.tanggalISO));
         renderTable(allData);
         fillDropdowns(allData);
       } catch (e) {
@@ -520,7 +579,16 @@
     filterStatus.addEventListener("change", filterTable);
     resetBtn.addEventListener("click", resetFilters);
     loadData();
+
+    // Back to Top (muncul saat digulir, scroll halus)
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 200) backToTop.classList.add('show');
+      else backToTop.classList.remove('show');
+    });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   </script>
 </body>
 </html>
-
